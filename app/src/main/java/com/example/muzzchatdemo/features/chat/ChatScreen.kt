@@ -15,12 +15,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowLeft
-import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -36,15 +35,17 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.muzzchatdemo.R
-import com.example.muzzchatdemo.data.usecase.ChatMessageWithUserInfo
 import com.example.muzzchatdemo.ui.commonui.ChatBox
 import com.example.muzzchatdemo.ui.commonui.ChatBubble
 import com.example.muzzchatdemo.ui.theme.MoreButtonTint
@@ -81,7 +82,7 @@ fun ChatScreen(
 @Composable
 private fun ChatView(
     modifier: Modifier,
-    chatMessages: List<ChatMessageWithUserInfo>,
+    chatMessages: List<DisplayableChatModel>,
     viewModel: ChatViewModel
 ) {
     ConstraintLayout(
@@ -111,9 +112,20 @@ private fun ChatView(
                 },
             state = listState
         ) {
-            items(chatMessages, key = { it.chatMessage.id }) { chatMessage ->
-                Spacer(modifier = Modifier.height(16.dp))
-                ChatBubble(chatMessage)
+            itemsIndexed(items = chatMessages, key = { index, item -> item.id }) { index, displayableItem ->
+                when (displayableItem) {
+                    is DisplayableChatItemWithSmallSpacing -> {
+                        Spacer(modifier = Modifier.height(2.dp))
+                        ChatBubble(displayableItem.chatMessageWithUserInfo)
+                    }
+                    is DisplayableChatItemWithLargeSpacing -> {
+                        Spacer(modifier = Modifier.height(16.dp))
+                        ChatBubble(displayableItem.chatMessageWithUserInfo)
+                    }
+                    is TimestampChatItem -> {
+                        BoldFirstWordText(displayableItem.displayableTimestamp)
+                    }
+                }
             }
         }
 
@@ -155,7 +167,9 @@ fun ChatHeader(
                 .fillMaxWidth()
                 .height(100.dp)
         ) {
-            IconButton(onClick = onBackClick, modifier = Modifier.padding(end = 8.dp).size(60.dp)) {
+            IconButton(onClick = onBackClick, modifier = Modifier
+                .padding(end = 8.dp)
+                .size(60.dp)) {
                 Icon(
                     imageVector = Icons.Default.KeyboardArrowLeft,
                     contentDescription = "Back",
@@ -188,6 +202,35 @@ fun ChatHeader(
 
             Spacer(modifier = Modifier.width(8.dp))
         }
+    }
+}
+
+
+@Composable
+fun BoldFirstWordText(displayableTimestamp: String) {
+    // Build the annotated string with bold style for the first word
+    val annotatedString = buildAnnotatedString {
+        val firstSpaceIndex = displayableTimestamp.indexOf(" ")
+
+        // Determine the end index for the first word
+        val endIndex = if (firstSpaceIndex == -1) displayableTimestamp.length else firstSpaceIndex
+
+        // Apply bold style to the first word
+        withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+            append(displayableTimestamp.substring(0, endIndex))
+        }
+
+        // Append the rest of the string without any special styling
+        append(displayableTimestamp.substring(endIndex))
+    }
+
+    // Display the annotated string in a Text composable
+    Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+        Text(
+            modifier = Modifier.padding(top = 16.dp),
+            text = annotatedString,
+            color = Color.Gray
+        )
     }
 }
 

@@ -6,6 +6,7 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
+import kotlin.random.Random
 
 interface ChatRepository {
     fun getChatItems(): Flow<List<ChatMessage>>
@@ -37,12 +38,14 @@ class ChatRepositoryImpl @Inject constructor(
         coroutineScope {
             userRepository.getCurrentlyChattingUsers().collect { currentUser ->
 
-                chatMessagesDao.insertMessages(ChatMessage(authorId = currentUser.first.id, timestamp = System.currentTimeMillis(), message = message))
+                val chatUsersRandom = Random.nextInt()
 
-                // Simulate network delay
-                delay(1000)
-
-                chatMessagesDao.insertMessages(ChatMessage(authorId = currentUser.second.id, timestamp = System.currentTimeMillis(), message = "Mocked Reply Message"))
+                val currentUserId = if (chatUsersRandom % 2 == 0) {
+                    currentUser.first.id
+                } else {
+                    currentUser.second.id
+                }
+                chatMessagesDao.insertMessages(ChatMessage(authorId = currentUserId, timestamp = System.currentTimeMillis(), message = message))
             }
         }
     }

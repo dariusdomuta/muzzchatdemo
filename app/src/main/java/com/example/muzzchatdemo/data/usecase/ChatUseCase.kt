@@ -24,7 +24,7 @@ class ChatUseCaseImpl @Inject constructor(
         ) { chatItems, currentUser ->
 
             chatItems.map { chatMessage ->
-                ChatMessageWithUserInfo(chatMessage, chatMessage.authorId == currentUser.first.id)
+                ChatMessageWithUserInfo(chatMessage, chatMessage.authorId == currentUser.first.id, chatItems.last() == chatMessage)
             }
         }
 
@@ -35,5 +35,6 @@ class ChatUseCaseImpl @Inject constructor(
 
 data class ChatMessageWithUserInfo(
     val chatMessage: ChatMessage,
-    val isCurrentUserTheSender: Boolean
+    val isCurrentUserTheSender: Boolean,
+    val isItemSeen: Boolean
 )
