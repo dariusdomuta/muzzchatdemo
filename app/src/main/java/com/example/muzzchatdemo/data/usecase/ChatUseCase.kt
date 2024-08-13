@@ -9,6 +9,8 @@ import javax.inject.Inject
 
 interface ChatUseCase {
     fun getChatMessages(): Flow<List<ChatMessageWithUserInfo>>
+
+    suspend fun sendChatMessage(message: String)
 }
 
 class ChatUseCaseImpl @Inject constructor(
@@ -25,6 +27,10 @@ class ChatUseCaseImpl @Inject constructor(
                 ChatMessageWithUserInfo(chatMessage, chatMessage.authorId == currentUser.id)
             }
         }
+
+    override suspend fun sendChatMessage(message: String) {
+        chatRepository.sendChatMessage(message)
+    }
 }
 
 data class ChatMessageWithUserInfo(
