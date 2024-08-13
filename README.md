@@ -1,3 +1,5 @@
+# Important: please use the develop branch as reference.
+
 # Muzz Chat App
 
 ## Android Exercise
