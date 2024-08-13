@@ -36,6 +36,8 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun GreetingPreview() {
     MuzzChatDemoTheme {
-        ChatScreen(Modifier)
+        Surface(modifier = Modifier.fillMaxSize()) {
+            ChatScreen(Modifier)
+        }
     }
 }

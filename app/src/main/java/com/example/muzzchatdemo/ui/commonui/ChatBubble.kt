@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -12,7 +13,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import com.example.muzzchatdemo.data.usecase.ChatMessageWithUserInfo
-import com.example.muzzchatdemo.ui.theme.Pink40
 
 @Composable
 fun ChatBubble(chatMessageWithUserInfo: ChatMessageWithUserInfo) {
@@ -31,10 +31,13 @@ fun ChatBubble(chatMessageWithUserInfo: ChatMessageWithUserInfo) {
                         bottomEnd = if (chatMessageWithUserInfo.isCurrentUserTheSender) 0f else 48f
                     )
                 )
-                .background(Pink40)
+                .background(if (chatMessageWithUserInfo.isCurrentUserTheSender) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.secondary)
                 .padding(16.dp)
         ) {
-            Text(text = chatMessageWithUserInfo.chatMessage.message)
+            Text(
+                text = chatMessageWithUserInfo.chatMessage.message, color =
+                if (chatMessageWithUserInfo.isCurrentUserTheSender) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSecondary
+            )
         }
     }
 }
