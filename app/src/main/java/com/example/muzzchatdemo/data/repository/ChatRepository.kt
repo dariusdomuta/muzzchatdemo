@@ -12,10 +12,10 @@ interface ChatRepository {
 class ChatRepositoryImpl @Inject constructor(): ChatRepository {
 
     val messagesList = listOf(
-        ChatMessage(1, "User 1", 0L, "Message 1"),
-        ChatMessage(2, "User 2", 0L, "Message 2"),
-        ChatMessage(3, "User 1", 0L, "Message 3"),
-        ChatMessage(4, "User 2", 0L, "Message 4"),
+        ChatMessage(1, 1, 0L, "Message 1"),
+        ChatMessage(2, 2, 0L, "Message 2"),
+        ChatMessage(3, 2, 0L, "Message 3"),
+        ChatMessage(4, 1, 0L, "Message 4"),
     )
 
     override fun getChatItems(): Flow<List<ChatMessage>> =

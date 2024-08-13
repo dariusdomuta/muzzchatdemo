@@ -2,7 +2,7 @@ package com.example.muzzchatdemo.data.model
 
 data class ChatMessage (
     val id: Int,
-    val author: String,
+    val authorId: Int,
     val timestamp: Long,
-    val message: String
+    val message: String,
 )
