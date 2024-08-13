@@ -25,4 +25,8 @@ class ChatViewModel @Inject constructor(
             }
         }
     }
+
+    fun sendMessage(message: String) {
+
+    }
 }
