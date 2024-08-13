@@ -65,6 +65,7 @@ fun ChatBox(modifier: Modifier, onSendChatClickListener: (String) -> Unit) {
         IconButton(
             onClick = {
                 onSendChatClickListener(chatBoxValue.text)
+                chatBoxValue = TextFieldValue("")
             },
             modifier = Modifier
                 .alpha(if (chatBoxValue.text.isEmpty()) 0.4f else 1f)
