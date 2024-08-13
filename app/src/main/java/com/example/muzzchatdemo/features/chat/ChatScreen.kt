@@ -1,5 +1,6 @@
 package com.example.muzzchatdemo.features.chat
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
@@ -8,21 +9,41 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
-import com.example.muzzchatdemo.data.usecase.ChatMessageWithUserInfo
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.muzzchatdemo.ui.commonui.ChatBox
 import com.example.muzzchatdemo.ui.commonui.ChatBubble
+import androidx.lifecycle.viewmodel.compose.viewModel
 
 @Composable
 fun ChatScreen(
-    modifier: Modifier = Modifier,
-    chatMessages: List<ChatMessageWithUserInfo>,
-    sendMessage: (String) -> Unit
+    modifier: Modifier = Modifier.fillMaxSize(),
+    viewModel: ChatViewModel = viewModel()
 ) {
+    val context = LocalContext.current
 
-    ConstraintLayout(modifier = modifier.fillMaxSize().imePadding()) {
+    // Collect state from ViewModel
+    val chatMessages by viewModel.chatMessagesFlow.collectAsStateWithLifecycle()
+    val errorToasts by viewModel.errorMessagesFlow.collectAsStateWithLifecycle()
+
+    // Show error toast if necessry
+    LaunchedEffect(key1 = errorToasts) {
+        errorToasts?.let {
+            Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
+        }
+    }
+
+    LaunchedEffect(key1 = Unit) {
+        viewModel.getChatMessages()
+    }
+
+    ConstraintLayout(modifier = modifier
+        .fillMaxSize()
+        .imePadding()) {
         val (messages, chatBox) = createRefs()
 
         val listState = rememberLazyListState()
@@ -56,7 +77,7 @@ fun ChatScreen(
                     end.linkTo(parent.end)
                 }
         ) { message ->
-            sendMessage(message)
+            viewModel.sendMessage(message)
         }
     }
 }

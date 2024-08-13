@@ -2,7 +2,9 @@ package com.example.muzzchatdemo.features.chat
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.example.muzzchatdemo.data.repository.ChatRepository
 import com.example.muzzchatdemo.data.usecase.ChatMessageWithUserInfo
 import com.example.muzzchatdemo.data.usecase.ChatUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel

@@ -66,9 +66,13 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     implementation(libs.androidx.lifecycle.runtime.compose)
     implementation(libs.dagger.hilt)
+    implementation(libs.androidx.navigation.runtime.ktx)
     ksp(libs.dagger.hilt.compiler)
 
     implementation(libs.androidx.constraintlayout)
+
+    implementation(libs.androidx.navigation.compose)
+    implementation(libs.androidx.hilt.navigation.compose)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
