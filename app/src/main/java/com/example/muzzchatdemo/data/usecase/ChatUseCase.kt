@@ -20,11 +20,11 @@ class ChatUseCaseImpl @Inject constructor(
     override fun getChatMessages(): Flow<List<ChatMessageWithUserInfo>> =
         combine(
             chatRepository.getChatItems(),
-            userRepository.getCurrentUser()
+            userRepository.getCurrentlyChattingUsers()
         ) { chatItems, currentUser ->
 
             chatItems.map { chatMessage ->
-                ChatMessageWithUserInfo(chatMessage, chatMessage.authorId == currentUser.id)
+                ChatMessageWithUserInfo(chatMessage, chatMessage.authorId == currentUser.first.id)
             }
         }
 

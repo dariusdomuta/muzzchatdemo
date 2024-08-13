@@ -1,6 +1,5 @@
 package com.example.muzzchatdemo.data.repository
 
-import com.example.muzzchatdemo.data.model.ChatMessage
 import com.example.muzzchatdemo.data.model.User
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -9,7 +8,7 @@ import javax.inject.Inject
 interface UserRepository {
     fun getUsers(): Flow<List<User>>
 
-    fun getCurrentUser(): Flow<User>
+    fun getCurrentlyChattingUsers(): Flow<Pair<User, User>>
 }
 
 class UserRepositoryImpl @Inject constructor(): UserRepository {
@@ -27,8 +26,8 @@ class UserRepositoryImpl @Inject constructor(): UserRepository {
             emit(usersList)
         }
 
-    override fun getCurrentUser(): Flow<User> =
+    override fun getCurrentlyChattingUsers(): Flow<Pair<User, User>> =
         flow {
-            emit(usersList[0])
+            emit(Pair(usersList[0], usersList[1]))
         }
 }
